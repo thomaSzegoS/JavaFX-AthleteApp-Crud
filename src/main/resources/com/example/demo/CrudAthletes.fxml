@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="724.0" prefWidth="1059.0" spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.Controller">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <children>
+      <AnchorPane prefHeight="718.0" prefWidth="1019.0">
+         <children>
+            <TextField fx:id="idField" layoutX="27.0" layoutY="14.0" prefHeight="25.0" prefWidth="247.0" promptText="ID" />
+            <TextField fx:id="firstNameField" layoutX="27.0" layoutY="51.0" prefHeight="25.0" prefWidth="247.0" promptText="ΟΝΟΜΑ" />
+            <TextField fx:id="lastNameField" layoutX="27.0" layoutY="90.0" prefHeight="25.0" prefWidth="247.0" promptText="ΕΠΙΘΕΤΟ" />
+            <ComboBox fx:id="sportComboBox" layoutX="27.0" layoutY="127.0" prefHeight="25.0" prefWidth="247.0" promptText="ΑΘΛΗΜΑ" />
+
+            <Button fx:id="addButton" layoutX="27.0" layoutY="169.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0"
+                    text="ΠΡΟΣΘΗΚΗ" onAction="#handleAdd"/>
+
+            <TableView fx:id="tableView" layoutX="542.0" layoutY="12.0" prefHeight="627.0" prefWidth="469.0">
+              <columns>
+                <TableColumn fx:id="idColumn" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="firstNameColumn" prefWidth="137.0" text="ΟΝΟΜΑ" />
+                  <TableColumn fx:id="lastNameColumn" prefWidth="130.0" text="ΕΠΙΘΕΤΟ" />
+                  <TableColumn fx:id="sportColumn" prefWidth="126.0" text="ΑΘΛΗΜΑ" />
+              </columns>
+            </TableView>
+
+            <Button fx:id="deleteButton" layoutX="161.0" layoutY="169.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="113.0"
+                    text="ΔΙΑΓΡΑΦΗ" onAction="#handleDelete"/>
+
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
