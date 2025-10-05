@@ -11,32 +11,23 @@ import java.sql.*;
 import java.util.Optional;
 
 public class Controller {
-    @FXML
-    private TextField idField;
 
-    @FXML
-    private TextField firstNameField;
+    // FXML UI Components
+    @FXML private TextField idField;
+    @FXML private TextField firstNameField;
+    @FXML private TextField lastNameField;
+    @FXML private ComboBox<String> sportComboBox;
 
-    @FXML
-    private TextField lastNameField;
+    @FXML private TextField idField1;
+    @FXML private TextField firstNameField1;
+    @FXML private TextField lastNameField1;
+    @FXML private ComboBox<String> sportComboBox1;
 
-    @FXML
-    private ComboBox<String> sportComboBox;
-
-    @FXML
-    private TableView<Athlete> tableView;
-
-    @FXML
-    private TableColumn<Athlete, Integer> idColumn;
-
-    @FXML
-    private TableColumn<Athlete, String> firstNameColumn;
-
-    @FXML
-    private TableColumn<Athlete, String> lastNameColumn;
-
-    @FXML
-    private TableColumn<Athlete, String> sportColumn;
+    @FXML private TableView<Athlete> tableView;
+    @FXML private TableColumn<Athlete, Integer> idColumn;
+    @FXML private TableColumn<Athlete, String> firstNameColumn;
+    @FXML private TableColumn<Athlete, String> lastNameColumn;
+    @FXML private TableColumn<Athlete, String> sportColumn;
 
     private ObservableList<Athlete> athleteList;
     private Database db;
@@ -45,6 +36,9 @@ public class Controller {
     public void initialize() {
         db = new Database();
         db.initialize();
+
+        idField.setDisable(true);
+        idField.setPromptText("" + db.getNextId());
 
         // Φόρτωση από τη βάση
         athleteList = FXCollections.observableArrayList(db.getAllAthletes());
@@ -136,7 +130,6 @@ public class Controller {
     @FXML
     private void handleAdd() {
         try {
-            int id = Integer.parseInt(idField.getText());
             String firstName = firstNameField.getText();
             String lastName = lastNameField.getText();
             String sport = sportComboBox.getValue();
@@ -146,7 +139,11 @@ public class Controller {
                 return;
             }
 
-            Athlete athlete = new Athlete(id, firstName, lastName, sport);
+            // Δημιουργία αθλητή χωρίς id
+            Athlete athlete = new Athlete(0, firstName, lastName, sport);
+            // Το id επιστρέφεται και ορίζεται αυτόματα από τη βάση
+            int generatedId = db.addAthlete(athlete);
+            athlete.setId(generatedId);
             // Προσθήκη αθλητή στη λίστα
             athleteList.add(athlete);
             // Προσθήκη αθλητή στη βάση δεδομένων
@@ -166,10 +163,10 @@ public class Controller {
 
     @FXML
     private void handleDelete() {
-        String idText = idField.getText().trim();
-        String firstName = firstNameField.getText().trim();
-        String lastName = lastNameField.getText().trim();
-        String sport = sportComboBox.getValue();
+        String idText = idField1.getText().trim();
+        String firstName = firstNameField1.getText().trim();
+        String lastName = lastNameField1.getText().trim();
+        String sport = sportComboBox1.getValue();
 
         if (idText.isEmpty() && firstName.isEmpty() && lastName.isEmpty() && (sport == null || sport.isEmpty())) {
             showAlert("Σφάλμα", "Συμπλήρωσε τουλάχιστον ένα πεδίο για διαγραφή.");
@@ -203,10 +200,10 @@ public class Controller {
             );
 
             // Καθάρισμα textFields μετά τη διαγραφή
-            idField.clear();
-            firstNameField.clear();
-            lastNameField.clear();
-            sportComboBox.setValue(null);
+            idField1.clear();
+            firstNameField1.clear();
+            lastNameField1.clear();
+            sportComboBox1.setValue(null);
 
         } catch (Exception e) {
             showAlert("Σφάλμα", "Σφάλμα κατά τη διαγραφή!");

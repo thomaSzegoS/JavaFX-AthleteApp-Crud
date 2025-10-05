@@ -39,34 +39,36 @@ public class Database {
         }
     }
 
+    public int getNextId() {
+        String sql = "SELECT IFNULL(MAX(ID), 0) + 1 AS nextId FROM athletes";
+        try (Connection conn = DriverManager.getConnection(url);
+             Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt("nextId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1; // Αν η βάση είναι άδεια ή αποτύχει το query
+    }
+
     // Προσθήκη: αν athlete.getId() > 0 προσπαθεί να εισάγει με το id, αλλιώς παίρνει generated key
     public int addAthlete(Athlete a) {
         if (a == null) return -1;
-        String withId = "INSERT INTO athletes(id, firstName, lastName, sport) VALUES (?, ?, ?, ?)";
-        String noId = "INSERT INTO athletes(firstName, lastName, sport) VALUES (?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(url)) {
-            if (a.getId() > 0) {
-                try (PreparedStatement ps = conn.prepareStatement(withId)) {
-                    ps.setInt(1, a.getId());
-                    ps.setString(2, a.getFirstName());
-                    ps.setString(3, a.getLastName());
-                    ps.setString(4, a.getSport());
-                    ps.executeUpdate();
-                    return a.getId();
-                }
-            } else {
-                try (PreparedStatement ps = conn.prepareStatement(noId, Statement.RETURN_GENERATED_KEYS)) {
-                    ps.setString(1, a.getFirstName());
-                    ps.setString(2, a.getLastName());
-                    ps.setString(3, a.getSport());
-                    ps.executeUpdate();
-                    try (ResultSet rs = ps.getGeneratedKeys()) {
-                        if (rs.next()) {
-                            int id = rs.getInt(1);
-                            a.setId(id);
-                            return id;
-                        }
-                    }
+        String sql = "INSERT INTO athletes(firstName, lastName, sport) VALUES (?, ?, ?)";
+        try (Connection conn = DriverManager.getConnection(url);
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, a.getFirstName());
+            ps.setString(2, a.getLastName());
+            ps.setString(3, a.getSport());
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    a.setId(id);
+                    return id;
                 }
             }
         } catch (SQLException e) {
